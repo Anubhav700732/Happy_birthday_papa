@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Happy Birthday Papa</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Berkshire+Swash" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
+  <style>
+    /* Simple responsive styles */
+    :root{ --card-bg: rgba(255,255,255,0.06); --accent:#d46a00 }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: 'Berkshire Swash', Arial, sans-serif;
+      background-image: url("https://i.ibb.co/Tc81Hjw/tenor.gif"); /* 🎉 Background GIF */
+      background-size: cover;
+      text-align:center;
+      color:#fff;
+      padding:24px;
+    }
+    .loader{
+      position:fixed; inset:0; display:flex; flex-direction:column; gap:12px;
+      align-items:center; justify-content:center; background:rgba(0,0,0,0.85); z-index:9999;
+    }
+    .loader img{ max-width:320px; width:70%; border-radius:12px }
+    .loader button{ padding:10px 18px; border-radius:8px; border:none; background:var(--accent); color:#fff; cursor:pointer }
+    .loader button.show{ box-shadow:0 8px 24px rgba(212,106,0,0.28) }
+
+    .card{
+      max-width:760px; margin:80px auto; background:var(--card-bg); padding:28px; border-radius:16px; box-shadow:0 6px 20px rgba(0,0,0,0.4);
+    }
+    .card h1{ color:var(--accent); font-size:2rem; margin:8px 0 }
+    .wish{ font-size:18px; line-height:1.6; color:#fff; margin:12px 0 }
+    img.media{ width:100%; border-radius:12px; margin:12px 0 }
+    .footer{ margin-top:18px; color:#ffd7b3 }
+
+    /* small utility */
+    @media(min-width:900px){ .loader img{ width:400px } }
+  </style>
+</head>
+<body>
+
+<script>
+  // Small friendly alerts in Hindi
+  // We don't rely on these for functionality — they are optional UX prompts.
+  try{ swal("पापा, इस जगह टच करें"); }catch(e){}
+</script>
+
+<!-- Loader overlay: click button or anywhere to start -->
+<div class="loader" id="loader">
+  <!-- 🎂 Birthday GIF 1: Animated wishes GIF (Image source: i.ibb.co/zGn9dvQ) -->
+  <!-- Comment: This GIF shows animated birthday wishes and is used as the loader visual. -->
+  <img src="C:\Users\pande\Downloads\happy_birtday papa.jpg" alt="Birthday GIF - animated wishes" />
+
+  <button id="startBtn" aria-label="Start greeting">पापा, जन्मदिन की शुभकामनाएँ — टच करें</button>
+  <h1>Loading...</h1>
+  <p>Happy Birthday Papa 🎂</p>
+</div>
+
+<!-- Audio element: CORRECTLY formed tag so getElementById will find it -->
+<!-- Background birthday song (source: Dropbox). If CORS or network blocks, audio may not play. -->
+<audio id="music" loop preload="auto">
+  <source src="https://dl.dropbox.com/s/5hahg59xe84k0cp/I%20wish%20you%20Happy%20Happy%20birthday.mp3?dl=0" type="audio/mpeg">
+  <!-- Fallback text for browsers that don't support audio -->
+  Your browser does not support the audio element.
+</audio>
+
+<!-- Main card content (visible after loader is hidden) -->
+<div class="card" id="card" aria-hidden="true" style="display:none;">
+  <h1>🎉 पापा, जन्मदिन मुबारक हो 🎉</h1>
+
+  <p class="wish">पापा, मेरे हर सपने के पीछे आपकी मेहनत और आपका विश्वास है।
+ईश्वर से प्रार्थना है कि आपके जीवन में खुशियों की कभी कमी न हो
+और आप हमेशा स्वस्थ, सुरक्षित और मुस्कुराते रहें❤️</p>
+
+  <!-- 🎁 Birthday GIF 2: Cute Animation (Image source: i.ibb.co/12QGg16) -->
+  <!-- Comment: Cute animated birthday GIF used as a decorative/media image. -->
+  <img class="media" src="https://esbirthday.com/img/nombre/happy-birthday-papa-gif.gif" alt="Cute birthday GIF - decorative" />
+
+  <p class="wish">आपकी मुस्कान हमारी दुनिया को रोशन करती है। हर दिन आपके लिए खुशियों से भरा हो।</p>
+
+  <!-- 📸 Papa Photo / Memory Image (Image source: i.ibb.co/Cb4Rjkf) -->
+  <!-- Comment: This is a personal photo/screenshot used as a memory image for Papa. Replace with your own photo if needed. -->
+  <img class="media" src="C:\Users\pande\Downloads\papa.jpeg" alt="Papa photo / memory image" />
+
+  <p class="wish">आप हमेशा हँसते रहिए और स्वस्थ रहिए।</p>
+
+  <div class="footer">— पापा, ढेर सारा प्यार और सम्मान — आपका अनुभव❤️</div>
+</div>
+
+<script>
+  // Defensive JS: ensure elements exist before using them
+  const loader = document.getElementById('loader');
+  const startBtn = document.getElementById('startBtn');
+  const card = document.getElementById('card');
+  const music = document.getElementById('music');
+
+  function showCardAndPlay() {
+    // hide loader
+    if (loader) loader.style.display = 'none';
+    if (card) { card.style.display = ''; card.removeAttribute('aria-hidden'); }
+
+    // play music only if audio element is present and allowed by browser
+    if (music) {
+      // Some browsers require direct user interaction to start audio. We attempt to play and ignore errors.
+      const playPromise = music.play();
+      if (playPromise !== undefined) {
+        playPromise.then(()=>{
+          // audio started successfully
+        }).catch((err)=>{
+          // play was prevented (autoplay policy) — do nothing. User can tap the page to start.
+          console.warn('Audio play prevented:', err);
+        });
+      }
+    }
+  }
+
+  // Button click to start greeting
+  if (startBtn) {
+    startBtn.addEventListener('click', (e)=>{
+      e.stopPropagation();
+      startBtn.classList.add('show');
+      showCardAndPlay();
+    });
+  }
+
+  // Also allow clicking anywhere on loader overlay to start
+  if (loader) {
+    loader.addEventListener('click', (e)=>{
+      // if user clicked the button, the button listener already handled it
+      if (e.target === startBtn) return;
+      showCardAndPlay();
+    });
+  }
+
+  // When the page fully loads, reveal the start button (visual cue)
+  window.addEventListener('load', ()=>{
+    if (startBtn) startBtn.classList.add('show');
+  });
+
+  // Accessibility: keyboard start (Enter on focused button)
+  if (startBtn) startBtn.addEventListener('keyup', (ev)=>{
+    if (ev.key === 'Enter') showCardAndPlay();
+  });
+</script>
+
+</body>
+</html>
